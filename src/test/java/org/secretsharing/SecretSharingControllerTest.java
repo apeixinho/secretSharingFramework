@@ -1,12 +1,10 @@
 package org.secretsharing;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.MockitoAnnotations;
 import org.secretsharing.config.RouterConfiguration;
 import org.secretsharing.config.SerializerConfiguration;
 import org.secretsharing.model.SecretShareDTO;
@@ -45,11 +43,6 @@ public class SecretSharingControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
-    @BeforeEach
-    public void setupInit() {
-
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testSecretSharingControllerDependency() {
