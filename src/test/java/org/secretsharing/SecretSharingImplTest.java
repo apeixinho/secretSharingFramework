@@ -23,6 +23,8 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -36,7 +38,7 @@ public class SecretSharingImplTest {
     private SecretSharing secretSharing;
 
     private List<SecretShareDTO> shares;
-    
+
     private final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 
     private final KeyPair keyPair = keyPairGenerator.generateKeyPair();
@@ -61,32 +63,35 @@ public class SecretSharingImplTest {
     }
 
     @BeforeEach
-    public void setupInit() throws NoSuchAlgorithmException {
+    public void setupInit() {
 
-        MockitoAnnotations.openMocks(this);
+        try (AutoCloseable mocks = MockitoAnnotations.openMocks(this)) {
 
-        when(configuration.secretSharingKeyPair()).thenReturn(keyPair);
-        when(configuration.secretSharingSignature()).thenReturn(signature);
+            when(configuration.secretSharingKeyPair()).thenReturn(keyPair);
+            when(configuration.secretSharingSignature()).thenReturn(signature);
 
-        when(configuration.secretSharingPrime(anyInt())).thenAnswer(invocation -> {
-            int bitSizeArgument = invocation.getArgument(0);
-            return BigInteger.probablePrime(bitSizeArgument, random);
-        });
+            when(configuration.secretSharingPrime(anyInt())).thenAnswer(invocation -> {
+                int bitSizeArgument = invocation.getArgument(0);
+                return BigInteger.probablePrime(bitSizeArgument, random);
+            });
 
-        when(configuration.secretSharingRandom()).thenReturn(random);
-        when(configuration.bitSize()).thenReturn(bitSize);
+            when(configuration.secretSharingRandom()).thenReturn(random);
+            when(configuration.bitSize()).thenReturn(bitSize);
 
-        when(configuration.maxByteSize(anyInt())).thenAnswer(invocation -> {
-            int bitSizeArgument = invocation.getArgument(0);
-            return (bitSizeArgument - 1) / 8;
-        });
-        when(configuration.maxShares()).thenReturn(maxShares);
+            when(configuration.maxByteSize(anyInt())).thenAnswer(invocation -> {
+                int bitSizeArgument = invocation.getArgument(0);
+                return (bitSizeArgument - 1) / 8;
+            });
+            when(configuration.maxShares()).thenReturn(maxShares);
 
-        secretSharing = new SecretSharingImpl(maxShares, prime, random, bitSize, maxByteSize, keyPair,
-                signature);
+            secretSharing = new SecretSharingImpl(maxShares, prime, random, bitSize, maxByteSize, keyPair,
+                    signature);
 
-        if (shares != null) {
-            shares.clear();
+            if (shares != null) {
+                shares.clear();
+            }
+        } catch (Exception e) {
+            Logger.getLogger(SecretSharingImplTest.class.getName()).log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -333,5 +338,5 @@ public class SecretSharingImplTest {
                 .filter(share -> IntStream.of(indexes).anyMatch(i -> i == share.getIndex()))
                 .collect(Collectors.toList());
     }
-    
+
 }
