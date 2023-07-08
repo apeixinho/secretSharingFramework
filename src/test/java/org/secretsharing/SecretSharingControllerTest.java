@@ -1,12 +1,10 @@
 package org.secretsharing;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.MockitoAnnotations;
 import org.secretsharing.config.SerializerConfiguration;
 import org.secretsharing.model.SecretShareDTO;
 import org.secretsharing.service.SecretSharing;
@@ -16,15 +14,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.List;
 import java.util.stream.Stream;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -43,12 +41,6 @@ public class SecretSharingControllerTest {
 
     @Autowired
     private WebTestClient webTestClient;
-
-    @BeforeEach
-    public void setupInit() {
-
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testSecretSharingControllerDependency() {

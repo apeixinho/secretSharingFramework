@@ -1,15 +1,11 @@
 package org.secretsharing.utils;
 
-import java.math.BigInteger;
-
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class NotBlankValidator implements ConstraintValidator<NotBlankAnnotation, Object> {
+import java.math.BigInteger;
 
-    @Override
-    public void initialize(NotBlankAnnotation constraintAnnotation) {
-    }
+public class NotBlankValidator implements ConstraintValidator<NotBlankAnnotation, Object> {
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
@@ -17,15 +13,12 @@ public class NotBlankValidator implements ConstraintValidator<NotBlankAnnotation
         if (value == null) {
             return false;
         }
-        if (value instanceof byte[]) {
-            byte[] byteArray = (byte[]) value;
+        if (value instanceof byte[] byteArray) {
             return byteArray.length > 0;
-        } else if (value instanceof Integer) {
-            Integer integer = (Integer) value;
-            return (integer != null && integer > 0);
-        } else if (value instanceof BigInteger) {
-            BigInteger bigInteger = (BigInteger) value;
-            return (bigInteger != null && bigInteger.compareTo(BigInteger.ZERO) != 1);
+        } else if (value instanceof Integer integer) {
+            return integer > 0;
+        } else if (value instanceof BigInteger bigInteger) {
+            return bigInteger.compareTo(BigInteger.ZERO) != 1;
         }
         return true;
     }
