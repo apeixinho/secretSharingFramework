@@ -29,6 +29,7 @@ public class SecretSharingTest {
     private static final int MIN_BIT_SIZE = 512, MAX_BIT_SIZE = 4096;
 
     private SecretSharing secretSharing;
+
     private List<SecretShareDTO> shares;
 
 
@@ -274,7 +275,7 @@ public class SecretSharingTest {
 
     private static List<SecretShareDTO> getSubsetShares(List<SecretShareDTO> shares, int[] indexes) {
         return shares.stream()
-            .filter(share -> IntStream.of(indexes).anyMatch(i -> i == share.getIndex()))
+            .filter(share -> IntStream.of(indexes).anyMatch(i -> i == share.index()))
             .collect(Collectors.toList());
     }
 }

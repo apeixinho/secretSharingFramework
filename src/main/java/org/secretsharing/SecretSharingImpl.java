@@ -104,11 +104,11 @@ public class SecretSharingImpl implements SecretSharing {
 
         int index = 0;
         for (SecretShareDTO share : shares) {
-            xValues[index] = BigInteger.valueOf(share.getIndex());
-            yValues[index] = share.getShare();
+            xValues[index] = BigInteger.valueOf(share.index());
+            yValues[index] = share.share();
             // Verify the signature
-            if (!verifySignature(share.getShare().toByteArray(), share.getSignature())) {
-                throw new SecurityException("Invalid signature for share at index: " + share.getIndex());
+            if (!verifySignature(share.share().toByteArray(), share.signature())) {
+                throw new SecurityException("Invalid signature for share at index: " + share.index());
             }
             index++;
         }
