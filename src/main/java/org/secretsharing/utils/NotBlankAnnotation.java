@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Documented
 @Constraint(validatedBy = NotBlankValidator.class)
 public @interface NotBlankAnnotation {
-    String message() default "Wrong value of, blank, null or negative";
+    String message() default "Value must not be blank";
 
     Class<?>[] groups() default {};
 
