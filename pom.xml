@@ -13,7 +13,7 @@
     </parent>
 
     <groupId>org.secretsharing</groupId>
-    <artifactId>secret-sharing</artifactId>
+    <artifactId>secret-sharing-api</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
