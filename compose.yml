@@ -1,0 +1,8 @@
+
+services:
+  secret-sharing-api:
+    build: .
+    image: secret-sharing-api
+    restart: "no"
+    ports:
+      - 8080:8080
