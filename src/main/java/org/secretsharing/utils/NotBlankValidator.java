@@ -25,7 +25,7 @@ public class NotBlankValidator implements ConstraintValidator<NotBlankAnnotation
             return (integer != null && integer > 0);
         } else if (value instanceof BigInteger) {
             BigInteger bigInteger = (BigInteger) value;
-            return (bigInteger != null && bigInteger.compareTo(BigInteger.ZERO) != 1);
+            return (bigInteger != null && bigInteger.signum() > 0);
         }
         return true;
     }
