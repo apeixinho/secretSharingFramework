@@ -18,9 +18,8 @@ public class NotBlankValidator implements ConstraintValidator<NotBlankAnnotation
         } else if (value instanceof Integer integer) {
             return integer > 0;
         } else if (value instanceof BigInteger bigInteger) {
-            return bigInteger.compareTo(BigInteger.ZERO) != 1;
+            return bigInteger.signum() > 0;
         }
         return true;
     }
-
 }

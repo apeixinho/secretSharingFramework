@@ -16,15 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-//import lombok.extern.java.Log;
+import lombok.extern.java.Log;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.logging.Level;
 
-// @Log
+@Log
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(SecretSharingController.BASE_URL)
@@ -48,7 +49,7 @@ public class SecretSharingController {
 
         return secretSharing.splitSecret(k, n, secret)
                 .onErrorResume(e -> {
-                    // log.log(Level.SEVERE, e.getMessage());
+                    log.log(Level.SEVERE, e.getMessage());
                     return Flux.error(e);
                 });
     }
@@ -62,7 +63,7 @@ public class SecretSharingController {
 
         return secretSharing.recoverSecret(shares)
                 .onErrorResume(e -> {
-                    // log.log(Level.SEVERE, e.getMessage());
+                    log.log(Level.SEVERE, e.getMessage());
                     return Mono.error(e);
                 });
     }
