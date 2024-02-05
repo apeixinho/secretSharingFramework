@@ -4,7 +4,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.NoSuchElementException;
-// import java.util.logging.Level;
+import java.util.logging.Level;
 
 import org.secretsharing.model.SecretShareDTO;
 import org.secretsharing.service.SecretSharing;
@@ -22,13 +22,14 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import lombok.extern.java.Log;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springdoc.core.annotations.RouterOperation;
 import org.springdoc.core.annotations.RouterOperations;
 
-// @Log
+@Log
 @CrossOrigin(origins = "*")
 @Configuration
 public class RouterConfiguration {
@@ -94,7 +95,7 @@ public class RouterConfiguration {
 
     private Mono<ServerResponse> handleException(Throwable ex) {
 
-        // log.log(Level.SEVERE, ex.getMessage());
+        log.log(Level.SEVERE, ex.getMessage());
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         if (ex instanceof InvalidKeyException
