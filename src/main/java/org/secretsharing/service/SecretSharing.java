@@ -10,6 +10,8 @@ import java.security.SignatureException;
 
 public interface SecretSharing {
 
+    Flux<SecretShareDTO> getSecretShares();
+
     Flux<SecretShareDTO> splitSecret(int k, int n, String secret)
             throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, IllegalArgumentException;
 

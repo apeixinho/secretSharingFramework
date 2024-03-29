@@ -66,7 +66,7 @@ public class SecretSharingImplTest {
     @BeforeEach
     public void setupInit() {
 
-        try (AutoCloseable mocks = MockitoAnnotations.openMocks(this)) {
+        try (AutoCloseable ignored = MockitoAnnotations.openMocks(this)) {
 
             when(configuration.secretSharingKeyPair()).thenReturn(keyPair);
             when(configuration.secretSharingSignature()).thenReturn(signature);
@@ -114,7 +114,7 @@ public class SecretSharingImplTest {
             throws InvalidKeyException, NoSuchAlgorithmException, SignatureException, AssertionError {
         StepVerifier.create(secretSharing.splitSecret(k, n, secret))
                 .expectErrorSatisfies(throwable -> {
-                    Assertions.assertTrue(throwable instanceof IllegalArgumentException);
+                    Assertions.assertInstanceOf(IllegalArgumentException.class, throwable);
                     Assertions.assertEquals("Invalid parameter(s) provided.",
                             throwable.getMessage());
                 }).verify();
@@ -131,7 +131,7 @@ public class SecretSharingImplTest {
 
         StepVerifier.create(secretSharing.splitSecret(3, 7, secret))
                 .expectErrorSatisfies(throwable -> {
-                    Assertions.assertTrue(throwable instanceof IllegalArgumentException);
+                    Assertions.assertInstanceOf(IllegalArgumentException.class, throwable);
                     Assertions.assertEquals("Invalid character(s) in secret.",
                             throwable.getMessage());
                 })
@@ -161,7 +161,7 @@ public class SecretSharingImplTest {
 
         StepVerifier.create(secretSharing.splitSecret(3, 7, secret))
                 .expectErrorSatisfies(throwable -> {
-                    Assertions.assertTrue(throwable instanceof IllegalArgumentException);
+                    Assertions.assertInstanceOf(IllegalArgumentException.class, throwable);
                     Assertions.assertEquals("Secret byte size overflow for current bit size.",
                             throwable.getMessage());
                 })

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.extern.java.Log;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -39,6 +40,17 @@ public class SecretSharingController {
         this.secretSharing = secretSharing;
     }
 
+    @GetMapping(value = "/secretShares")
+    @ResponseStatus(HttpStatus.OK)
+    public Flux<SecretShareDTO> secretShares(){
+
+        return secretSharing.getSecretShares()
+                .onErrorResume(e -> {
+                    log.log(Level.SEVERE, e.getMessage());
+                    return Flux.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+                });
+    }
+
     @GetMapping(value = "/splitSecret")
     @ResponseStatus(HttpStatus.OK)
     public Flux<SecretShareDTO> splitSecret(
@@ -50,7 +62,7 @@ public class SecretSharingController {
         return secretSharing.splitSecret(k, n, secret)
                 .onErrorResume(e -> {
                     log.log(Level.SEVERE, e.getMessage());
-                    return Flux.error(e);
+                    return Flux.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage()));
                 });
     }
 
@@ -64,7 +76,7 @@ public class SecretSharingController {
         return secretSharing.recoverSecret(shares)
                 .onErrorResume(e -> {
                     log.log(Level.SEVERE, e.getMessage());
-                    return Mono.error(e);
+                    return Mono.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage()));
                 });
     }
 

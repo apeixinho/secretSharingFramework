@@ -277,7 +277,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-target/
 
 ### VisualStudioCode ###
 .vscode/*

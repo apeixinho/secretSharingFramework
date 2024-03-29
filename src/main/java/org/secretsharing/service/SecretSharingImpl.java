@@ -23,6 +23,7 @@ public class SecretSharingImpl implements SecretSharing {
     private final int maxByteSize;
     private final KeyPair keyPair;
     private final Signature signatureVerifier;
+    private Flux<SecretShareDTO> secretShares;
 
     public SecretSharingImpl(int maxShares, BigInteger prime, SecureRandom random, int bitSize, int maxByteSize,
             KeyPair keyPair, Signature signatureVerifier) {
@@ -33,6 +34,11 @@ public class SecretSharingImpl implements SecretSharing {
         this.maxByteSize = maxByteSize;
         this.keyPair = keyPair;
         this.signatureVerifier = signatureVerifier;
+    }
+
+    @Override
+    public Flux<SecretShareDTO> getSecretShares() {
+       return secretShares;
     }
 
     @Override
@@ -54,9 +60,10 @@ public class SecretSharingImpl implements SecretSharing {
         if (secretBytes > maxByteSize) {
             return Flux.error(new IllegalArgumentException("Secret byte size overflow for current bit size."));
         }
-
-        return Mono.fromCallable(() -> doSplitSecret(k, n, secret)).flatMapMany(Flux::fromIterable)
-                .subscribeOn(Schedulers.parallel());
+        secretShares = Mono.fromCallable(() -> doSplitSecret(k, n, secret)).flatMapMany(Flux::fromIterable)
+        .subscribeOn(Schedulers.parallel());
+        
+        return secretShares;
     }
 
     private List<SecretShareDTO> doSplitSecret(int k, int n, String secret)
