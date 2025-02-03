@@ -1,13 +1,16 @@
-spring:
-  devtools:
-    add-properties: false
 logging:
-  level:
-    web: WARN
-
+    level:
+        web: WARN
 secret-sharing:
-  asymmetricAlgorithm: RSA
-  hashAlgorithm: SHA256withRSA
-  keyPairBitSize: 2048
-  bitSize: 2048
-  maxShares: 60
+    asymmetricAlgorithm: RSA
+    bitSize: 2048
+    hashAlgorithm: SHA256withRSA
+    keyPairBitSize: 2048
+    maxShares: 60
+    mongo-credentials:
+        mongouser: ${MONGO_USER}
+        mongopass: ${MONGO_PASSWORD}
+        mongodb: ${MONGO_USER_DB}
+spring:
+    devtools:
+        add-properties: false
