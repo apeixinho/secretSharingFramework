@@ -259,6 +259,7 @@ Temporary Items
 **/nbproject/private/
 **/nbproject/Makefile-*.mk
 **/nbproject/Package-*.bash
+**/nbactions.xml
 build/
 nbbuild/
 dist/
