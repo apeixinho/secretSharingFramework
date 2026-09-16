@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.secretsharing.config.SerializerConfiguration.ByteArrayDeserializer;
 import org.secretsharing.config.SerializerConfiguration.ByteArraySerializer;
-import org.secretsharing.utils.NotBlankAnnotation;
+import org.secretsharing.validation.ValidShareValue;
 
 import java.math.BigInteger;
 
@@ -16,17 +16,16 @@ import java.math.BigInteger;
 @RequiredArgsConstructor
 public class SecretShareDTO {
 
-    @NotBlankAnnotation
+    @ValidShareValue
     private final Integer index;
 
-    @NotBlankAnnotation
+    @ValidShareValue
     @JsonSerialize(using = ToStringSerializer.class)
     @JsonDeserialize(using = BigIntegerDeserializer.class)
     private final BigInteger share;
 
-    @NotBlankAnnotation
+    @ValidShareValue
     @JsonSerialize(using = ByteArraySerializer.class)
     @JsonDeserialize(using = ByteArrayDeserializer.class)
     private final byte[] signature;
-
 }

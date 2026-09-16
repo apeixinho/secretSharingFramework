@@ -15,21 +15,19 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 @Configuration
 public class SerializerConfiguration {
 
-    public class ByteArraySerializer extends JsonSerializer<byte[]> {
+    public static class ByteArraySerializer extends JsonSerializer<byte[]> {
 
         @Override
         public void serialize(byte[] value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            String base64Value = Base64.getEncoder().encodeToString(value);
-            gen.writeString(base64Value);
+            gen.writeString(Base64.getEncoder().encodeToString(value));
         }
     }
 
-    public class ByteArrayDeserializer extends JsonDeserializer<byte[]> {
+    public static class ByteArrayDeserializer extends JsonDeserializer<byte[]> {
 
         @Override
         public byte[] deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-            String base64Value = p.getValueAsString();
-            return Base64.getDecoder().decode(base64Value);
+            return Base64.getDecoder().decode(p.getValueAsString());
         }
     }
 }

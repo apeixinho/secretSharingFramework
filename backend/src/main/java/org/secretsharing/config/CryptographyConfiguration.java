@@ -5,7 +5,6 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.Signature;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +25,7 @@ public class CryptographyConfiguration {
     @Value("${secret-sharing.bitSize:2048}")
     private int bitSize;
 
-    @Value("${secret-sharing.maxShares:300}")
+    @Value("${secret-sharing.maxShares:60}")
     private int maxShares;
 
     @Bean
@@ -37,8 +36,8 @@ public class CryptographyConfiguration {
     }
 
     @Bean
-    public Signature secretSharingSignature() throws NoSuchAlgorithmException {
-        return Signature.getInstance(hashAlgorithm);
+    public String secretSharingHashAlgorithm() {
+        return hashAlgorithm;
     }
 
     @Bean
@@ -47,7 +46,7 @@ public class CryptographyConfiguration {
     }
 
     @Bean
-    public BigInteger secretSharingPrime(@Value("${secret-sharing.bitSize:2048}") int bitSize) {
+    public BigInteger secretSharingPrime() {
         return BigInteger.probablePrime(bitSize, secretSharingRandom());
     }
 
@@ -57,7 +56,7 @@ public class CryptographyConfiguration {
     }
 
     @Bean
-    public Integer maxByteSize(@Value("${secret-sharing.bitSize:2048}") int bitSize) {
+    public Integer maxByteSize() {
         return (bitSize - 1) / 8;
     }
 
@@ -65,5 +64,4 @@ public class CryptographyConfiguration {
     public Integer maxShares() {
         return maxShares;
     }
-
 }

@@ -1,8 +1,10 @@
-
 services:
   secret-sharing-api:
     build: .
-    image: secret-sharing-api
+    image: secret-sharing-api:latest
     restart: "no"
     ports:
-      - 8080:8080
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SECRET_SHARING_CORS_ALLOWED_ORIGINS: "*"

@@ -1,0 +1,7 @@
+# Root ignores (backend has its own .gitignore for Maven/IDE)
+.DS_Store
+*.log
+.idea/
+*.iml
+.vscode/
+.cursor/

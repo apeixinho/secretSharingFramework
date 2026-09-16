@@ -1,52 +1,94 @@
 # Secret Sharing API
 
-## Implementation using Springboot
+Reactive [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) service built with **Spring WebFlux**.
 
-[Docker](https://www.docker.com/) and 
-[docker compose](https://docs.docker.com/compose/) are required to build and run the application containerized 
+This repository’s **main** line is the reactive API under `backend/` (historically developed on the `reactive` branch). Experimental variants are documented in [BRANCHES.md](BRANCHES.md).
+
+## Requirements
+
+- **Java 21**
+- Docker / Docker Compose (optional, for containers)
+- Maven Wrapper is included (`backend/mvnw`)
+
+## Quick start (local)
+
+```bash
+cd backend
+./mvnw test
+./mvnw spring-boot:run
+```
+
+- API base path: `http://localhost:8080/api/v1`
+- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- OpenAPI JSON: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+- Health: [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+
+## API
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| `POST` | `/api/v1/splitSecret` | Split a secret into `n` signed shares (threshold `k`) |
+| `POST` | `/api/v1/recoverSecret` | Reconstruct the secret from at least `k` valid shares |
+
+### Split
+
+```bash
+curl -s -X POST http://localhost:8080/api/v1/splitSecret \
+  -H 'Content-Type: application/json' \
+  -d '{"k":3,"n":5,"secret":"for-your-eyes-only"}'
+```
+
+Shares use indexes **1..n** (never `0`, which would be the secret polynomial value).
+
+### Recover
+
+```bash
+curl -s -X POST http://localhost:8080/api/v1/recoverSecret \
+  -H 'Content-Type: application/json' \
+  -d '[{"index":1,"share":"...","signature":"..."},{"index":2,"share":"...","signature":"..."},{"index":3,"share":"...","signature":"..."}]'
+```
 
 ## Docker / Compose
 
-In the project root folder, in order to build the image, from which the container will be instantied, execute the following command:
+Run commands from **`backend/`** (where `Dockerfile` and `compose.yml` live):
 
-```
+```bash
+cd backend
 docker compose build
-# or 
-docker build . -t <image name>
-```
-
-To instantiate a container, in detached mode, based from that image, execute the following command:
-
-```
 docker compose up -d
-# or 
-docker run -d <image name>
-
-```
-
-To view and follow the logs, being output by the application, execute the following command:
-```
 docker compose logs -f
-# or 
-docker logs -f <container name>
-
 ```
 
+Or:
 
-After starting the application, documentation and testing are available at: [localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-
-
-To debug a running container and get a shell, bash, zsh, etc, in the container, execute the following command:
-
-```
-docker exec -it <container name> bash
-
+```bash
+cd backend
+docker build -t secret-sharing-api:latest .
+docker run --rm -p 8080:8080 -e SECRET_SHARING_CORS_ALLOWED_ORIGINS='*' secret-sharing-api:latest
 ```
 
-To debug a running container, or execute a command, in the container, execute the following command:
+The image is a multi-stage **Java 21** build that runs the packaged JAR (not `mvn spring-boot:run`).
 
-```
-docker exec <container name> command
-# to run a shell, or execute the command of a shell, like bash, zsh, etc
+## Configuration
 
-```
+| Property | Default | Notes |
+|----------|---------|--------|
+| `secret-sharing.maxShares` | `60` | Upper bound for `n` |
+| `secret-sharing.bitSize` | `2048` | Field size for the modular polynomial |
+| `secret-sharing.keyPairBitSize` | `2048` | RSA key used to sign shares |
+| `secret-sharing.hashAlgorithm` | `SHA256withRSA` | Signature algorithm |
+| `secret-sharing.cors.allowed-origins` | `[]` | Empty = no browser CORS; set `*` only for demos |
+
+Compose sets `SECRET_SHARING_CORS_ALLOWED_ORIGINS=*` for local demos.
+
+Actuator exposes **health** and **info** only; details stay closed.
+
+## Threat model (short)
+
+- Split/recover is **in-process**: shares are not persisted by this service.
+- Each share is **RSA-signed** with a key pair generated at startup. Signatures prove issuance by **this process instance**; restart rotates keys and old signatures will fail verification.
+- This is **not** a multi-party authenticity or key-distribution protocol. Treat it as a demo / educational API unless you replace key management and add authn/authz.
+
+## License
+
+See [LICENSE](LICENSE).

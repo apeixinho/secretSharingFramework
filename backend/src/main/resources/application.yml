@@ -1,9 +1,28 @@
 spring:
+  application:
+    name: secret-sharing-api
   devtools:
     add-properties: false
+
 logging:
   level:
     web: WARN
+    org.secretsharing: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
 
 secret-sharing:
   asymmetricAlgorithm: RSA
@@ -11,3 +30,6 @@ secret-sharing:
   keyPairBitSize: 2048
   bitSize: 2048
   maxShares: 60
+  cors:
+    # Empty by default (no browser CORS). Set to ["*"] or specific origins for demos.
+    allowed-origins: []

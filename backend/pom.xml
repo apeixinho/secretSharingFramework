@@ -7,24 +7,20 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.12</version>
+        <version>3.4.5</version>
         <relativePath />
-        <!-- lookup parent from repository -->
     </parent>
 
     <groupId>org.secretsharing</groupId>
     <artifactId>secret-sharing-api</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <description>Reactive Shamir secret-sharing API (Spring WebFlux)</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.plugin.validation>verbose</maven.plugin.validation>
         <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <maven.compiler.version>3.13.0</maven.compiler.version>
-        <maven.surefire.version>3.5.2</maven.surefire.version>
+        <springdoc.version>2.8.8</springdoc.version>
     </properties>
 
     <dependencies>
@@ -37,8 +33,24 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -51,30 +63,10 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- http://localhost:8080/swagger-ui.html -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-            <version>2.6.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -87,29 +79,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.version}</version>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <configuration>
-                            <showDeprecation>true</showDeprecation>
-                            <source>${maven.compiler.source}</source>
-                            <target>${maven.compiler.target}</target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.version}</version>
-            </plugin>
-
         </plugins>
     </build>
 

@@ -1,4 +1,4 @@
-package org.secretsharing.utils;
+package org.secretsharing.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = NotBlankValidator.class)
-public @interface NotBlankAnnotation {
-    String message() default "Value must not be blank";
+@Constraint(validatedBy = ValidShareValueValidator.class)
+public @interface ValidShareValue {
+    String message() default "Share field must be present and positive";
 
     Class<?>[] groups() default {};
 
