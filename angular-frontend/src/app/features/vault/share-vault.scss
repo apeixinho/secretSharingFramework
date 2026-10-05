@@ -1,0 +1,229 @@
+:host {
+  display: block;
+}
+
+.vault-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: end;
+  margin-bottom: 1.25rem;
+}
+
+.vault-head h2 {
+  margin: 0.35rem 0 0.7rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  font-weight: 550;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.vault-head p {
+  margin: 0;
+  max-width: 36rem;
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
+  line-height: 1.55;
+}
+
+.vault-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.import-box {
+  display: grid;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, white 55%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.import-box label {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.import-box textarea {
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, white 70%, var(--panel));
+  color: var(--ink);
+  padding: 0.75rem 0.85rem;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  resize: vertical;
+}
+
+.import-box textarea:focus-visible {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal) 22%, transparent);
+}
+
+.empty {
+  padding: 2rem 1.25rem;
+  border: 1px dashed color-mix(in srgb, var(--ink) 18%, transparent);
+  border-radius: 1rem;
+  text-align: center;
+  color: color-mix(in srgb, var(--ink) 62%, transparent);
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.25rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: color-mix(in srgb, var(--ink) 70%, transparent);
+  font-size: 0.9rem;
+}
+
+.meta-row strong {
+  color: var(--ink);
+  margin-left: 0.25rem;
+}
+
+.selection-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-left: auto;
+}
+
+.share-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.share-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, white 58%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  animation: card-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+.share-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.share-select input {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: var(--teal);
+}
+
+.share-body {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.mono-block {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.mono-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+.mono-block code {
+  display: block;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--ink) 88%, transparent);
+  max-height: 4.5rem;
+  overflow: auto;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--ink) 5%, white);
+}
+
+.copy-btn {
+  justify-self: start;
+}
+
+.text-btn {
+  border: 0;
+  background: transparent;
+  color: var(--teal-deep);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.text-btn:hover,
+.text-btn:focus-visible {
+  color: var(--ink);
+}
+
+.banner {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.banner--error {
+  background: color-mix(in srgb, #9b3d2e 12%, white);
+  color: #7a2f24;
+}
+
+.banner--ok {
+  background: color-mix(in srgb, var(--teal) 14%, white);
+  color: #1f5b4e;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-card {
+    animation: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .share-card {
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+  }
+}

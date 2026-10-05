@@ -1,0 +1,113 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.9rem clamp(1rem, 3vw, 2rem);
+  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--ink) 78%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--mist) 12%, transparent);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--mist);
+  text-decoration: none;
+  min-width: 0;
+}
+
+.brand-mark {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  background: linear-gradient(135deg, var(--teal), var(--brass));
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brass) 35%, transparent);
+}
+
+.brand-text {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav {
+  display: none;
+  gap: 1.25rem;
+}
+
+.nav a {
+  color: color-mix(in srgb, var(--mist) 78%, transparent);
+  text-decoration: none;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  transition: color 160ms ease;
+}
+
+.nav a:hover,
+.nav a:focus-visible {
+  color: var(--mist);
+}
+
+.health {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--mist) 18%, transparent);
+  background: color-mix(in srgb, var(--ink-soft) 80%, transparent);
+  color: color-mix(in srgb, var(--mist) 86%, transparent);
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.health:hover,
+.health:focus-visible {
+  border-color: color-mix(in srgb, var(--mist) 36%, transparent);
+  color: var(--mist);
+}
+
+.health:active {
+  transform: translateY(1px);
+}
+
+.health-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--mist) 45%, transparent);
+}
+
+.health--online .health-dot {
+  background: var(--teal-bright);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal-bright) 18%, transparent);
+}
+
+.health--offline .health-dot {
+  background: #d97862;
+}
+
+@media (min-width: 720px) {
+  .nav {
+    display: inline-flex;
+  }
+}

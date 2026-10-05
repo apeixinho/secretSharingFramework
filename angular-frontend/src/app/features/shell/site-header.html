@@ -1,0 +1,24 @@
+<header class="site-header">
+  <a class="brand" href="#top" aria-label="Secret Sharing home">
+    <span class="brand-mark" aria-hidden="true"></span>
+    <span class="brand-text">Secret Sharing</span>
+  </a>
+
+  <nav class="nav" aria-label="Primary">
+    <a href="#split">Split</a>
+    <a href="#vault">Vault</a>
+    <a href="#recover">Recover</a>
+  </nav>
+
+  <button
+    type="button"
+    class="health"
+    [class.health--online]="health() === 'online'"
+    [class.health--offline]="health() === 'offline'"
+    [attr.aria-label]="healthLabel() + '. Click to refresh.'"
+    (click)="refreshHealth()"
+  >
+    <span class="health-dot" aria-hidden="true"></span>
+    <span>{{ healthLabel() }}</span>
+  </button>
+</header>

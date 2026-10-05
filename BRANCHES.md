@@ -18,8 +18,13 @@
 ## Layout
 
 ```
-backend/          Spring Boot WebFlux application
-  src/main/java   API, crypto config, validation
-  Dockerfile      Multi-stage Java 21 image
-  compose.yml     Local container run
+backend/               Spring Boot WebFlux application
+  src/main/java        API, crypto config, validation
+  Dockerfile           Multi-stage Java 21 image
+  compose.yml          Local container run
+angular-frontend/      Angular UI (dev :4200)
+react-frontend/        React + TypeScript UI (dev :4201)
+typescript-frontend/   Vanilla TypeScript + Tailwind UI (dev :4202)
 ```
+
+All three frontends implement the same split / vault / recover flow against the reactive POST API.

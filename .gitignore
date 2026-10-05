@@ -5,3 +5,8 @@
 *.iml
 .vscode/
 .cursor/
+
+# Frontends
+**/node_modules/
+**/dist/
+**/.angular/

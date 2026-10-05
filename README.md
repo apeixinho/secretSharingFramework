@@ -9,6 +9,7 @@ This repository’s **main** line is the reactive API under `backend/` (historic
 - **Java 21**
 - Docker / Docker Compose (optional, for containers)
 - Maven Wrapper is included (`backend/mvnw`)
+- **Node.js 20+** (optional, for frontends)
 
 ## Quick start (local)
 
@@ -22,6 +23,20 @@ cd backend
 - Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 - OpenAPI JSON: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 - Health: [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+
+## Frontends
+
+Polished UIs that talk to the reactive API above (POST split/recover). Start the backend first, then one of:
+
+| App | Stack | Dev URL | Start |
+|-----|--------|---------|--------|
+| [angular-frontend](angular-frontend/) | Angular | http://localhost:4200 | `npm start` |
+| [react-frontend](react-frontend/) | React + TypeScript | http://localhost:4201 | `npm start` |
+| [typescript-frontend](typescript-frontend/) | Vanilla TypeScript + Tailwind | http://localhost:4202 | `npm start` |
+
+Each app proxies `/api` and `/actuator` to `http://localhost:8080` in development. Shares are stored in the browser under `ssf.share-vault.v1`.
+
+These frontends target the **POST JSON** API contract. Historical branches that still expose `GET /splitSecret` (e.g. `rest`, older `reactive*`) are not compatible.
 
 ## API
 
