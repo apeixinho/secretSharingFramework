@@ -1,0 +1,98 @@
+<section class="vault" id="vault" aria-labelledby="vault-title">
+  <div class="vault-head">
+    <div>
+      <p class="section-kicker">02 · Vault</p>
+      <h2 id="vault-title">Persistent share vault</h2>
+      <p>
+        Shares stay in this browser until you clear them. Select the fragments you will send to recover.
+      </p>
+    </div>
+
+    <div class="vault-actions">
+      <button type="button" class="btn btn-ghost-ink" (click)="toggleImport()">
+        {{ importOpen() ? 'Close import' : 'Import JSON' }}
+      </button>
+      @if (vault.hasShares()) {
+        <button type="button" class="btn btn-ghost-ink" (click)="exportVault()">Export</button>
+        <button type="button" class="btn btn-ghost-ink" (click)="clearVault()">Clear</button>
+      }
+    </div>
+  </div>
+
+  @if (importOpen()) {
+    <div class="import-box">
+      <label for="import-json">Paste share JSON</label>
+      <textarea
+        id="import-json"
+        rows="6"
+        [value]="importText()"
+        (input)="importText.set($any($event.target).value)"
+        placeholder='[{"index":1,"share":"...","signature":"..."}]'
+      ></textarea>
+      <button type="button" class="btn btn-primary" (click)="importShares()">Import into vault</button>
+    </div>
+  }
+
+  @if (notice()) {
+    <p class="banner banner--ok" role="status">{{ notice() }}</p>
+  }
+  @if (error()) {
+    <p class="banner banner--error" role="alert">{{ error() }}</p>
+  }
+
+  @if (!vault.hasShares()) {
+    <div class="empty">
+      <p>No shares yet. Split a secret or import JSON to begin.</p>
+    </div>
+  } @else {
+    <div class="meta-row">
+      <span>
+        Threshold
+        <strong>{{ vault.threshold() ?? '—' }}</strong>
+      </span>
+      <span>
+        Total
+        <strong>{{ vault.totalShares() ?? vault.shares().length }}</strong>
+      </span>
+      <span>
+        Selected
+        <strong>{{ vault.selectedCount() }}</strong>
+      </span>
+      <div class="selection-actions">
+        <button type="button" class="text-btn" (click)="vault.selectThreshold()">Select k</button>
+        <button type="button" class="text-btn" (click)="vault.selectAll()">Select all</button>
+        <button type="button" class="text-btn" (click)="vault.clearSelection()">Clear selection</button>
+      </div>
+    </div>
+
+    <ul class="share-list" role="list">
+      @for (share of vault.shares(); track share.index; let i = $index) {
+        <li class="share-card" [style.--delay]="i * 40 + 'ms'">
+          <label class="share-select">
+            <input
+              type="checkbox"
+              [checked]="vault.isSelected(share.index)"
+              (change)="vault.toggleShare(share.index)"
+            />
+            <span class="share-index">Share {{ share.index }}</span>
+          </label>
+
+          <div class="share-body">
+            <div class="mono-block">
+              <span class="mono-label">Value</span>
+              <code>{{ share.share }}</code>
+            </div>
+            <div class="mono-block">
+              <span class="mono-label">Signature</span>
+              <code>{{ share.signature }}</code>
+            </div>
+          </div>
+
+          <button type="button" class="text-btn copy-btn" (click)="copyShare(share.index)">
+            {{ copiedIndex() === share.index ? 'Copied' : 'Copy JSON' }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</section>

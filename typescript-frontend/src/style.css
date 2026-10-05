@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #0c1110;
+  --color-ink-soft: #151c1a;
+  --color-mist: #e7eeea;
+  --color-panel: #dce6e1;
+  --color-teal: #2f7a6b;
+  --color-teal-deep: #1f5b4e;
+  --color-teal-bright: #4ea891;
+  --color-brass: #c9b07a;
+  --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', serif;
+  --font-body: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-shard,
+  .animate-link,
+  .animate-rise,
+  .animate-card,
+  .animate-reveal {
+    animation: none !important;
+  }
+}
+
+@keyframes shard-breathe {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.78;
+  }
+  50% {
+    transform: translateY(-8px) scale(1.04);
+    opacity: 1;
+  }
+}
+
+@keyframes link-drift {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -160;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-shard {
+  animation: shard-breathe 7.5s ease-in-out infinite;
+}
+
+.animate-link {
+  stroke-dasharray: 8 14;
+  animation: link-drift 18s linear infinite;
+}
+
+.animate-rise {
+  animation: rise-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-card {
+  animation: card-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-reveal {
+  animation: reveal 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.brand-mark {
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+}
