@@ -1,7 +1,7 @@
 # Secret Sharing · TypeScript + Tailwind
 
 Vanilla TypeScript (Vite) frontend styled with Tailwind CSS for the reactive
-[Secret Sharing API](https://github.com/apeixinho/secretSharingFramework/tree/age/reactive-main-hardening-07a4).
+[Secret Sharing API](https://github.com/apeixinho/secretSharingFramework).
 
 Split a secret into RSA-signed shares, keep them in a browser-local vault, and recover the secret when enough selected shares are available.
 
@@ -29,6 +29,7 @@ Dev server proxies:
 | Command | Purpose |
 |---------|---------|
 | `npm start` | Dev server on port 4202 with API proxy |
+| `npm test` | Unit tests (Vitest) |
 | `npm run build` | Production build to `dist/` |
 | `npm run preview` | Serve the production build |
 

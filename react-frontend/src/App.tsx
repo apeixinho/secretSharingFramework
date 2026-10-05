@@ -28,7 +28,7 @@ export default function App() {
         <p>
           React frontend for the{' '}
           <a
-            href="https://github.com/apeixinho/secretSharingFramework/tree/age/reactive-main-hardening-07a4"
+            href="https://github.com/apeixinho/secretSharingFramework"
             target="_blank"
             rel="noreferrer"
           >

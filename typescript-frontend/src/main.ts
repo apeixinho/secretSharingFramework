@@ -364,7 +364,7 @@ function renderShell(): string {
   <footer class="px-4 md:px-8 pt-5 pb-8 bg-ink text-mist/60 text-sm text-center">
     <p class="m-0">
       TypeScript + Tailwind frontend for the
-      <a class="text-brass" href="https://github.com/apeixinho/secretSharingFramework/tree/age/reactive-main-hardening-07a4" target="_blank" rel="noreferrer">reactive Secret Sharing API</a>
+      <a class="text-brass" href="https://github.com/apeixinho/secretSharingFramework" target="_blank" rel="noreferrer">reactive Secret Sharing API</a>
       · shares persist locally in this browser
     </p>
   </footer>

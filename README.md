@@ -36,6 +36,8 @@ Polished UIs that talk to the reactive API above (POST split/recover). Start the
 
 Each app proxies `/api` and `/actuator` to `http://localhost:8080` in development. Shares are stored in the browser under `ssf.share-vault.v1`.
 
+Run `npm test` in each frontend directory for unit tests. CI runs backend tests plus all three frontend test + build jobs.
+
 These frontends target the **POST JSON** API contract. Historical branches that still expose `GET /splitSecret` (e.g. `rest`, older `reactive*`) are not compatible.
 
 ## API

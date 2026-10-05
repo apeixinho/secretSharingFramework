@@ -1,7 +1,7 @@
 # Secret Sharing Frontend
 
 Polished Angular frontend for the reactive
-[Secret Sharing API](https://github.com/apeixinho/secretSharingFramework/tree/age/reactive-main-hardening-07a4).
+[Secret Sharing API](https://github.com/apeixinho/secretSharingFramework).
 
 Split a secret into RSA-signed shares, keep them in a browser-local vault, and recover the secret when enough selected shares are available.
 
@@ -30,7 +30,7 @@ Dev server proxies:
 |---------|---------|
 | `npm start` | Dev server with API proxy |
 | `npm run build` | Production build to `dist/` |
-| `npm test` | Unit tests |
+| `npm test` | Unit tests (watch off; use `npm run test:watch` locally) |
 
 ## Backend contract
 
