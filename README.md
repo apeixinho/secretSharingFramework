@@ -1,15 +1,18 @@
-# Secret Sharing API
+# Secret Sharing API (`reactive-functional`)
 
 Reactive [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) service
-built with **Spring Boot 4** / **WebFlux** (functional routing).
+built with **Spring Boot 4.1.2** / **WebFlux** (functional `RouterFunction` routing).
 
 Split a UTF-8 secret into `n` RSA-signed shares such that any `k` of them recover the secret.
-Fewer than `k` shares (excluding the degenerate `x=0` share) must not reconstruct it.
+Shares are evaluated at \(x = 1..n\) (the secret is \(P(0)\) and is never emitted as a share).
+
+SSS algorithm aligned with the reviewed `pojo` library branch.
 
 ## Requirements
 
-- **Java 21+** (local toolchain may be newer; the project targets 21)
-- Maven Wrapper is included (`backend/mvnw`)
+- **Java 21+**
+- Maven Wrapper (`backend/mvnw`)
+- Docker (optional; see `backend/Dockerfile`)
 
 ## Quick start
 
@@ -94,7 +97,17 @@ Actuator exposes **health** and **info** only; details stay closed.
   old signatures fail verification.
 - Putting the secret in a **GET query string** is convenient for demos and leaks via logs/proxies —
   treat this branch as educational unless you change the contract.
-- This is **not** a multi-party authenticity or key-distribution protocol.
+- Learning/reference implementation — not a production crypto package (see `pojo` README notes).
+
+## Related branches
+
+| Branch | What it is |
+|--------|------------|
+| `main` / `reactive` | WebFlux `@RestController` API (+ frontends on `main`) |
+| `reactive-functional` | **This branch** — functional router style |
+| `reactive-mongo` | WebFlux + Reactive MongoDB persistence |
+| `rest` | Spring MVC (servlet) experiment |
+| `pojo` | Plain Java SSS library (algorithm reference) |
 
 ## License
 
