@@ -1,6 +1,19 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,intellij,netbeans,eclipse,visualstudiocode,windows,macos,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,intellij,netbeans,eclipse,visualstudiocode,windows,macos,linux
 
+### Maven template
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+# https://github.com/takari/maven-wrapper#usage-without-binary-jar
+.mvn/wrapper/maven-wrapper.jar
+
 ### Eclipse ###
 .metadata
 bin/
@@ -265,7 +278,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-target/
 
 ### VisualStudioCode ###
 .vscode/*
@@ -312,6 +324,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Environment Variables
-*.env
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,netbeans,eclipse,visualstudiocode,windows,macos,linux

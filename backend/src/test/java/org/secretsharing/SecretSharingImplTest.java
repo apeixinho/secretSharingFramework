@@ -330,7 +330,8 @@ public class SecretSharingImplTest {
 
     private int[] getRandomIndexes(int k, int n) {
 
-        return random.ints(0, n).distinct().limit(k).toArray();
+        // Share indices are 1..n (P(0) is not distributed).
+        return random.ints(1, n + 1).distinct().limit(k).toArray();
     }
 
     private List<SecretShareDTO> getSubsetShares(List<SecretShareDTO> shares, int[] indexes) {

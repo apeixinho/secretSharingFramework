@@ -1,9 +1,24 @@
 spring:
   devtools:
     add-properties: false
+  servlet:
+    multipart:
+      max-file-size: 256KB
+      max-request-size: 256KB
+
 logging:
   level:
     web: WARN
+    org.secretsharing: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
 
 secret-sharing:
   asymmetricAlgorithm: RSA
