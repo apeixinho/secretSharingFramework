@@ -1,52 +1,82 @@
-# Secret Sharing API
+# Secret Sharing API (`reactive`)
 
-## Implementation using Springboot
+Reactive [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) service
+built with **Spring Boot 4** / **WebFlux** (`@RestController`).
 
-[Docker](https://www.docker.com/) and 
-[docker compose](https://docs.docker.com/compose/) are required to build and run the application containerized 
+Split a UTF-8 secret into `n` RSA-signed shares such that any `k` of them recover the secret.
+
+## Requirements
+
+- **Java 21+**
+- Maven Wrapper (`backend/mvnw`)
+- Docker / Compose (optional)
+
+## Quick start
+
+```bash
+cd backend
+./mvnw test
+./mvnw spring-boot:run
+```
+
+- API: `http://localhost:8080/api/v1`
+- Health: [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+- OpenAPI: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+## API
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| `GET` | `/api/v1/splitSecret?k=&n=&secret=` | Split a secret into `n` signed shares |
+| `POST` | `/api/v1/recoverSecret` | Reconstruct the secret from signed shares |
+| `GET` | `/api/v1/secretShares` | Last in-memory share set from this process |
+| `GET` | `/actuator/health` | Health probe |
+
+### Split
+
+```bash
+curl -sG 'http://localhost:8080/api/v1/splitSecret' \
+  --data-urlencode 'k=2' \
+  --data-urlencode 'n=3' \
+  --data-urlencode 'secret=for-your-eyes-only'
+```
+
+### Recover
+
+```bash
+curl -s -X POST 'http://localhost:8080/api/v1/recoverSecret' \
+  -H 'Content-Type: application/json' \
+  -d '[{"index":1,"share":"...","signature":"..."},{"index":2,"share":"...","signature":"..."}]'
+```
+
+### Errors (sanitized)
+
+| Status | When |
+|--------|------|
+| `400` | Invalid / missing params, blank secret, empty shares |
+| `403` | Share signature verification failed |
+| `429` | Too many `/recoverSecret` calls |
+| `500` | Unexpected server failure |
 
 ## Docker / Compose
 
-In the project root folder, in order to build the image, from which the container will be instantied, execute the following command:
-
-```
+```bash
+cd backend
 docker compose build
-# or 
-docker build . -t <image name>
-```
-
-To instantiate a container, in detached mode, based from that image, execute the following command:
-
-```
 docker compose up -d
-# or 
-docker run -d <image name>
-
-```
-
-To view and follow the logs, being output by the application, execute the following command:
-```
 docker compose logs -f
-# or 
-docker logs -f <container name>
-
 ```
 
+## Configuration
 
-After starting the application, documentation and testing are available at: [localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+| Property | Default | Notes |
+|----------|---------|-------|
+| `secret-sharing.maxShares` | `60` | Upper bound for `n` |
+| `secret-sharing.cors.allowed-origins` | localhost:4200–4202 | Comma-separated origins |
+| `secret-sharing.rate-limit.recover.capacity` | `30` | Recover calls per window |
+| `spring.codec.max-in-memory-size` | `256KB` | Request body cap |
 
+## License
 
-To debug a running container and get a shell, bash, zsh, etc, in the container, execute the following command:
-
-```
-docker exec -it <container name> bash
-
-```
-
-To debug a running container, or execute a command, in the container, execute the following command:
-
-```
-docker exec <container name> command
-# to run a shell, or execute the command of a shell, like bash, zsh, etc
-
-```
+See [LICENSE](LICENSE).

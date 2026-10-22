@@ -1,9 +1,22 @@
 spring:
   devtools:
     add-properties: false
+  codec:
+    max-in-memory-size: 256KB
+
 logging:
   level:
     web: WARN
+    org.secretsharing: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
 
 secret-sharing:
   asymmetricAlgorithm: RSA
@@ -11,3 +24,9 @@ secret-sharing:
   keyPairBitSize: 2048
   bitSize: 2048
   maxShares: 60
+  cors:
+    allowed-origins: http://localhost:4200,http://localhost:4201,http://localhost:4202
+  rate-limit:
+    recover:
+      capacity: 30
+      window-seconds: 60
