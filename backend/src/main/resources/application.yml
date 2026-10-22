@@ -1,16 +1,43 @@
-logging:
-    level:
-        web: WARN
-secret-sharing:
-    asymmetricAlgorithm: RSA
-    bitSize: 2048
-    hashAlgorithm: SHA256withRSA
-    keyPairBitSize: 2048
-    maxShares: 60
-    mongo-credentials:
-        mongouser: ${MONGO_USER}
-        mongopass: ${MONGO_PASSWORD}
-        mongodb: ${MONGO_USER_DB}
 spring:
-    devtools:
-        add-properties: false
+  devtools:
+    add-properties: false
+  codec:
+    max-in-memory-size: 256KB
+  data:
+    mongodb:
+      # Prefer URI when available; MongoConfig still supplies credentials for local compose.
+      auto-index-creation: false
+
+logging:
+  level:
+    web: WARN
+    org.secretsharing: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+  health:
+    mongo:
+      enabled: false
+
+secret-sharing:
+  asymmetricAlgorithm: RSA
+  hashAlgorithm: SHA256withRSA
+  keyPairBitSize: 2048
+  bitSize: 2048
+  maxShares: 60
+  cors:
+    allowed-origins: http://localhost:4200,http://localhost:4201,http://localhost:4202
+  rate-limit:
+    recover:
+      capacity: 30
+      window-seconds: 60
+  mongo-credentials:
+    mongouser: ${MONGO_USER:root}
+    mongopass: ${MONGO_PASSWORD:example}
+    mongodb: ${MONGO_USER_DB:secretsharing}

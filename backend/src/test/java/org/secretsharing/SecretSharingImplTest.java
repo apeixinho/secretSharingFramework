@@ -26,6 +26,7 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -374,6 +375,73 @@ public class SecretSharingImplTest {
                 Arguments.of(2, 4, "\n\t\t\n   \n\t"),
                 Arguments.of(2, 4, null),
                 Arguments.of(2, 301, "Super Secret"));
+    }
+
+    @Test
+    public void splitSecret_rejectsWhenNExceedsMaxShares() throws Exception {
+        StepVerifier.create(secretSharing.splitSecret(2, maxShares + 1, "bounded"))
+                .expectErrorSatisfies(throwable -> {
+                    Assertions.assertInstanceOf(IllegalArgumentException.class, throwable);
+                    Assertions.assertEquals("Invalid parameter(s) provided.", throwable.getMessage());
+                })
+                .verify();
+    }
+
+    @Test
+    public void splitAndRecover_randomKSubsetsRoundTrip() throws Exception {
+        int k = 3;
+        int n = 7;
+        String secret = "property-based-round-trip";
+
+        List<SecretShareDTO> allShares = secretSharing.splitSecret(k, n, secret).collectList().block();
+        Assertions.assertNotNull(allShares);
+        Assertions.assertEquals(n, allShares.size());
+
+        for (int trial = 0; trial < 5; trial++) {
+            int[] indexes = getRandomIndexes(k, n);
+            Flux<SecretShareDTO> subset = Flux.fromIterable(allShares)
+                    .filter(share -> IntStream.of(indexes).anyMatch(i -> i == share.getIndex()));
+            StepVerifier.create(secretSharing.recoverSecret(subset))
+                    .expectNext(secret)
+                    .expectComplete()
+                    .verify();
+        }
+    }
+
+    @Test
+    public void recoverWithFewerThanThresholdShares_doesNotYieldOriginalSecret() throws Exception {
+        int k = 4;
+        int n = 6;
+        String secret = "threshold-check-secret";
+
+        List<SecretShareDTO> allShares = secretSharing.splitSecret(k, n, secret).collectList().block();
+        Assertions.assertNotNull(allShares);
+
+        int[] insufficient = IntStream.rangeClosed(1, k - 1).toArray();
+        Flux<SecretShareDTO> subset = Flux.fromIterable(allShares)
+                .filter(share -> IntStream.of(insufficient).anyMatch(i -> i == share.getIndex()));
+
+        String recovered = secretSharing.recoverSecret(subset).block();
+        Assertions.assertNotEquals(secret, recovered);
+    }
+
+    @Test
+    public void knownVector_fixedSecretAndShareIndexesRoundTrip() throws Exception {
+        int k = 2;
+        int n = 3;
+        String secret = "known-vector";
+
+        List<SecretShareDTO> allShares = secretSharing.splitSecret(k, n, secret).collectList().block();
+        Assertions.assertNotNull(allShares);
+        Assertions.assertEquals(List.of(0, 1, 2), allShares.stream().map(SecretShareDTO::getIndex).toList());
+
+        Flux<SecretShareDTO> subset = Flux.fromIterable(allShares)
+                .filter(share -> share.getIndex() == 1 || share.getIndex() == 2);
+
+        StepVerifier.create(secretSharing.recoverSecret(subset))
+                .expectNext(secret)
+                .expectComplete()
+                .verify();
     }
 
     private int[] getRandomIndexes(int k, int n) {

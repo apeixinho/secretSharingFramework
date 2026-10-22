@@ -1,24 +1,62 @@
 package org.secretsharing.domain;
 
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Objects;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigInteger;
-
-@Data
-@AllArgsConstructor
-@Builder
 @Document
 public class SecretShare {
 
-    @Id
-    private final Integer index;
+	@Id
+	private final Integer index;
 
-    private final BigInteger share;
+	private final BigInteger share;
 
-    private final byte[] signature;
+	private final byte[] signature;
+
+	public SecretShare(Integer index, BigInteger share, byte[] signature) {
+		this.index = index;
+		this.share = share;
+		this.signature = signature;
+	}
+
+	public Integer getIndex() {
+		return index;
+	}
+
+	public BigInteger getShare() {
+		return share;
+	}
+
+	public byte[] getSignature() {
+		return signature;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof SecretShare that)) {
+			return false;
+		}
+		return Objects.equals(index, that.index)
+				&& Objects.equals(share, that.share)
+				&& Arrays.equals(signature, that.signature);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hash(index, share);
+		result = 31 * result + Arrays.hashCode(signature);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "SecretShare[index=" + index + ", share=" + share + ", signature=" + Arrays.toString(signature) + "]";
+	}
 }

@@ -1,52 +1,50 @@
-# Secret Sharing API
+# Secret Sharing API (`reactive-mongo`)
 
-## Implementation using Springboot
+Reactive [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) service
+built with **Spring Boot 4** / **WebFlux** + **Reactive MongoDB**.
 
-[Docker](https://www.docker.com/) and 
-[docker compose](https://docs.docker.com/compose/) are required to build and run the application containerized 
+Same k-of-n split/recover contract as `reactive`, with Mongo wiring for share persistence experiments.
 
-## Docker / Compose
+## Requirements
 
-In the project root folder, in order to build the image, from which the container will be instantied, execute the following command:
+- **Java 21+**
+- Maven Wrapper (`backend/mvnw`)
+- MongoDB (see `backend/compose.yml`)
 
-```
-docker compose build
-# or 
-docker build . -t <image name>
-```
+## Quick start
 
-To instantiate a container, in detached mode, based from that image, execute the following command:
-
-```
-docker compose up -d
-# or 
-docker run -d <image name>
-
+```bash
+cd backend
+docker compose up -d   # Mongo
+./mvnw test
+./mvnw spring-boot:run
 ```
 
-To view and follow the logs, being output by the application, execute the following command:
-```
-docker compose logs -f
-# or 
-docker logs -f <container name>
+- API: `http://localhost:8080/api/v1`
+- Health: [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
-```
+## API
 
+| Method | Path | Purpose |
+|--------|------|---------|
+| `GET` | `/api/v1/splitSecret?k=&n=&secret=` | Split a secret into `n` signed shares |
+| `POST` | `/api/v1/recoverSecret` | Reconstruct the secret from signed shares |
+| `GET` | `/api/v1/secretShares` | Last in-memory share set from this process |
+| `GET` | `/actuator/health` | Health probe |
 
-After starting the application, documentation and testing are available at: [localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+Sanitized errors: `400` / `403` / `429` / `500` (same policy as `reactive`).
 
+## Configuration
 
-To debug a running container and get a shell, bash, zsh, etc, in the container, execute the following command:
+| Property | Default | Notes |
+|----------|---------|-------|
+| `secret-sharing.maxShares` | `60` | Upper bound for `n` |
+| `secret-sharing.cors.allowed-origins` | localhost:4200–4202 | CORS allow-list |
+| `secret-sharing.rate-limit.recover.*` | 30 / 60s | Recover rate limit |
+| `secret-sharing.mongo-credentials.*` | env `MONGO_*` | Used by `MongoConfig` |
+| `spring.codec.max-in-memory-size` | `256KB` | Request body cap |
 
-```
-docker exec -it <container name> bash
+## License
 
-```
-
-To debug a running container, or execute a command, in the container, execute the following command:
-
-```
-docker exec <container name> command
-# to run a shell, or execute the command of a shell, like bash, zsh, etc
-
-```
+See [LICENSE](LICENSE).
