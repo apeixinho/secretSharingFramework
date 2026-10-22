@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
-RUN ./mvnw dependency:resolve
+RUN chmod +x mvnw && sed -i 's/\r$//' mvnw \
+	&& ./mvnw dependency:resolve
 
 COPY src ./src
 
