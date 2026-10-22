@@ -26,7 +26,7 @@ public class CryptographyConfiguration {
     @Value("${secret-sharing.bitSize:2048}")
     private int bitSize;
 
-    @Value("${secret-sharing.maxShares:300}")
+    @Value("${secret-sharing.maxShares:60}")
     private int maxShares;
 
     @Bean

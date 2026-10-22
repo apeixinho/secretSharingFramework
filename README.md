@@ -1,9 +1,12 @@
 # Secret Sharing API (`reactive`)
 
 Reactive [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) service
-built with **Spring Boot 4** / **WebFlux** (`@RestController`).
+built with **Spring Boot 4.1.2** / **WebFlux** (`@RestController`).
 
 Split a UTF-8 secret into `n` RSA-signed shares such that any `k` of them recover the secret.
+Shares are evaluated at \(x = 1..n\) (the secret is \(P(0)\) and is never emitted as a share).
+
+SSS algorithm aligned with the reviewed `pojo` library branch.
 
 ## Requirements
 
@@ -73,9 +76,23 @@ docker compose logs -f
 | Property | Default | Notes |
 |----------|---------|-------|
 | `secret-sharing.maxShares` | `60` | Upper bound for `n` |
+| `secret-sharing.bitSize` | `2048` | SSS field size |
+| `secret-sharing.keyPairBitSize` | `2048` | RSA signing key size |
 | `secret-sharing.cors.allowed-origins` | localhost:4200–4202 | Comma-separated origins |
 | `secret-sharing.rate-limit.recover.capacity` | `30` | Recover calls per window |
 | `spring.codec.max-in-memory-size` | `256KB` | Request body cap |
+
+Learning/reference service — not a production crypto package.
+
+## Related branches
+
+| Branch | What it is |
+|--------|------------|
+| `main` / `reactive` | **This line** — annotated `@RestController` WebFlux API |
+| `reactive-functional` | Functional `RouterFunction` style |
+| `reactive-mongo` | WebFlux + Reactive MongoDB |
+| `rest` | Spring MVC (servlet) experiment |
+| `pojo` | Plain Java SSS library (algorithm reference) |
 
 ## License
 

@@ -433,10 +433,10 @@ public class SecretSharingImplTest {
 
         List<SecretShareDTO> allShares = secretSharing.splitSecret(k, n, secret).collectList().block();
         Assertions.assertNotNull(allShares);
-        Assertions.assertEquals(List.of(0, 1, 2), allShares.stream().map(SecretShareDTO::getIndex).toList());
+        Assertions.assertEquals(List.of(1, 2, 3), allShares.stream().map(SecretShareDTO::getIndex).toList());
 
         Flux<SecretShareDTO> subset = Flux.fromIterable(allShares)
-                .filter(share -> share.getIndex() == 1 || share.getIndex() == 2);
+                .filter(share -> share.getIndex() == 2 || share.getIndex() == 3);
 
         StepVerifier.create(secretSharing.recoverSecret(subset))
                 .expectNext(secret)
@@ -445,8 +445,8 @@ public class SecretSharingImplTest {
     }
 
     private int[] getRandomIndexes(int k, int n) {
-
-        return random.ints(0, n).distinct().limit(k).toArray();
+        // Share indices are 1..n (P(0) is not distributed).
+        return random.ints(1, n + 1).distinct().limit(k).toArray();
     }
 
     private Flux<SecretShareDTO> getSubsetShares(Flux<SecretShareDTO> shares, int[] indexes) {
