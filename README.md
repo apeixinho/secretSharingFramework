@@ -1,15 +1,17 @@
 # Secret Sharing API (`reactive-mongo`)
 
 Reactive [Shamir's Secret Sharing](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing) service
-built with **Spring Boot 4** / **WebFlux** + **Reactive MongoDB**.
+built with **Spring Boot 4.1.2** / **WebFlux** + **Reactive MongoDB**.
 
-Same k-of-n split/recover contract as `reactive`, with Mongo wiring for share persistence experiments.
+Same k-of-n split/recover contract as `reactive`, with Mongo wiring for share persistence.
+Shares are evaluated at \(x = 1..n\) (secret is \(P(0)\), never emitted). SSS algorithm aligned
+with the reviewed `pojo` library branch.
 
 ## Requirements
 
 - **Java 21+**
 - Maven Wrapper (`backend/mvnw`)
-- MongoDB (see `backend/compose.yml`)
+- MongoDB (see `backend/compose.yml`) / Docker for Testcontainers IT
 
 ## Quick start
 
@@ -40,10 +42,24 @@ Sanitized errors: `400` / `403` / `429` / `500` (same policy as `reactive`).
 | Property | Default | Notes |
 |----------|---------|-------|
 | `secret-sharing.maxShares` | `60` | Upper bound for `n` |
+| `secret-sharing.bitSize` | `2048` | SSS field size |
+| `secret-sharing.keyPairBitSize` | `2048` | RSA signing key size |
 | `secret-sharing.cors.allowed-origins` | localhost:4200–4202 | CORS allow-list |
 | `secret-sharing.rate-limit.recover.*` | 30 / 60s | Recover rate limit |
 | `spring.data.mongodb.uri` | local user/password URI | Override with `SPRING_DATA_MONGODB_URI` (Compose sets this) |
 | `spring.codec.max-in-memory-size` | `256KB` | Request body cap |
+
+Learning/reference service — not a production crypto package.
+
+## Related branches
+
+| Branch | What it is |
+|--------|------------|
+| `main` / `reactive` | Annotated `@RestController` WebFlux API |
+| `reactive-functional` | Functional `RouterFunction` style |
+| `reactive-mongo` | **This branch** — WebFlux + Reactive MongoDB |
+| `rest` | Spring MVC (servlet) experiment |
+| `pojo` | Plain Java SSS library (algorithm reference) |
 
 ## License
 

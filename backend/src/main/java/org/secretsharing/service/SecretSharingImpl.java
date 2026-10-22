@@ -1,7 +1,6 @@
 package org.secretsharing.service;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -9,6 +8,7 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.secretsharing.domain.SecretShare;
@@ -62,15 +62,13 @@ public class SecretSharingImpl implements SecretSharing {
 
 	@Override
 	public Flux<SecretShareDTO> splitSecret(int k, int n, String secret) {
-		if (k <= 0 || n <= 0 || k > n || n > maxShares || secret == null || secret.strip().isBlank()) {
+		if (k <= 0 || n <= 0 || k > n || n > maxShares || secret == null || secret.isBlank()) {
 			return Flux.error(new IllegalArgumentException("Invalid parameter(s) provided."));
 		}
-		Charset allowedCharset = StandardCharsets.UTF_8;
-		if (!allowedCharset.newEncoder().canEncode(secret)) {
+		if (containsUnpairedSurrogate(secret)) {
 			return Flux.error(new IllegalArgumentException("Invalid character(s) in secret."));
 		}
-		int secretBytes = secret.strip().getBytes(StandardCharsets.UTF_8).length + 1;
-		if (secretBytes > maxByteSize) {
+		if (secret.getBytes(StandardCharsets.UTF_8).length > maxByteSize) {
 			return Flux.error(new IllegalArgumentException("Secret byte size overflow for current bit size."));
 		}
 
@@ -92,13 +90,13 @@ public class SecretSharingImpl implements SecretSharing {
 		List<SecretShareDTO> shares = new ArrayList<>();
 
 		BigInteger[] coefficients = new BigInteger[k];
-		coefficients[0] = new BigInteger(secret.getBytes(StandardCharsets.UTF_8));
+		coefficients[0] = new BigInteger(1, secret.getBytes(StandardCharsets.UTF_8));
 
 		for (int i = 1; i < k; i++) {
-			coefficients[i] = BigInteger.probablePrime(bitSize, random);
+			coefficients[i] = new BigInteger(bitSize, random).mod(prime);
 		}
 
-		for (int i = 0; i < n; i++) {
+		for (int i = 1; i <= n; i++) {
 			BigInteger x = BigInteger.valueOf(i);
 			BigInteger y = computePolynomial(coefficients, x);
 			shares.add(new SecretShareDTO(i, y, signData(y.toByteArray())));
@@ -109,7 +107,7 @@ public class SecretSharingImpl implements SecretSharing {
 	@Override
 	public Mono<String> recoverSecret(Flux<SecretShareDTO> shares) {
 		return shares.collectList().flatMap(sharesList -> {
-			if (sharesList.isEmpty()) {
+			if (sharesList == null || sharesList.isEmpty()) {
 				return Mono.error(new IllegalArgumentException("Empty shares provided."));
 			}
 			return Mono.fromCallable(() -> doRecoverSecret(sharesList)).subscribeOn(Schedulers.parallel());
@@ -118,7 +116,6 @@ public class SecretSharingImpl implements SecretSharing {
 
 	private String doRecoverSecret(List<SecretShareDTO> shares) throws SignatureException, InvalidKeyException {
 		int k = shares.size();
-
 		BigInteger[] xValues = new BigInteger[k];
 		BigInteger[] yValues = new BigInteger[k];
 
@@ -131,8 +128,15 @@ public class SecretSharingImpl implements SecretSharing {
 			}
 			index++;
 		}
-		BigInteger secret = interpolate(xValues, yValues);
-		return new String(secret.toByteArray(), StandardCharsets.UTF_8);
+		return new String(unsignedBytesFrom(interpolate(xValues, yValues)), StandardCharsets.UTF_8);
+	}
+
+	private static byte[] unsignedBytesFrom(BigInteger value) {
+		byte[] bytes = value.toByteArray();
+		if (bytes.length > 1 && bytes[0] == 0) {
+			return Arrays.copyOfRange(bytes, 1, bytes.length);
+		}
+		return bytes;
 	}
 
 	private BigInteger computePolynomial(BigInteger[] coefficients, BigInteger x) {
@@ -150,7 +154,7 @@ public class SecretSharingImpl implements SecretSharing {
 			BigInteger denominator = BigInteger.ONE;
 			for (int j = 0; j < xValues.length; j++) {
 				if (i != j) {
-					numerator = numerator.multiply(BigInteger.ZERO.subtract(xValues[j]));
+					numerator = numerator.multiply(BigInteger.ZERO.subtract(xValues[j])).mod(prime);
 					denominator = denominator.multiply(xValues[i].subtract(xValues[j])).mod(prime);
 				}
 			}
@@ -159,6 +163,21 @@ public class SecretSharingImpl implements SecretSharing {
 			result = result.add(term).mod(prime);
 		}
 		return result;
+	}
+
+	private static boolean containsUnpairedSurrogate(String value) {
+		for (int i = 0; i < value.length(); i++) {
+			char c = value.charAt(i);
+			if (Character.isHighSurrogate(c)) {
+				if (i + 1 >= value.length() || !Character.isLowSurrogate(value.charAt(i + 1))) {
+					return true;
+				}
+				i++;
+			} else if (Character.isLowSurrogate(c)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private synchronized byte[] signData(byte[] data) throws InvalidKeyException, SignatureException {
