@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SecretSharingTest {
 
-    private static final int MIN_BIT_SIZE = 512, MAX_BIT_SIZE = 4096;
+    private static final int MIN_BIT_SIZE = 1024, MAX_BIT_SIZE = 4096;
 
     private SecretSharing secretSharing;
 
@@ -41,13 +41,11 @@ public class SecretSharingTest {
 
     @AfterEach
     public void setupDestroy() {
-        if (!shares.isEmpty()) {
-            shares.clear();
-        }
+        shares.clear();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Integer.MIN_VALUE, 0, 1, -1, 511, 4097, Integer.MAX_VALUE})
+    @ValueSource(ints = {Integer.MIN_VALUE, 0, 1, -1, 511, 512, 1023, 4097, Integer.MAX_VALUE})
     public void constructor_InvalidArgs(int bitSize) {
 
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
@@ -159,6 +157,24 @@ public class SecretSharingTest {
         Assertions.assertEquals(secret, recoveredSecret);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "\u00A9",
+            "\u20AC",
+            "\u00F5es",
+            "\u00A9AE",
+            "\u00E7\u00E3o"
+    })
+    public void splitSecretAndRecover_Utf8WithHighBitLeadingByte(String secret)
+            throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
+        // Leading UTF-8 byte has MSB set; signed BigInteger(byte[]) would mis-encode these.
+        int k = 2, n = 4;
+        shares = secretSharing.splitSecret(k, n, secret);
+        Assertions.assertEquals(n, shares.size());
+        List<SecretShareDTO> selectedShares = getSubsetShares(shares, getRandomIndexes(k, n));
+        Assertions.assertEquals(secret, secretSharing.recoverSecret(selectedShares));
+    }
+
     @Test
     public void splitSecretAndRecover_MultilineSecret() throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
 
@@ -198,7 +214,7 @@ public class SecretSharingTest {
 
         int k = 3, n = 6;
         // custom bitSize constructor
-        secretSharing = new SecretSharingImpl(512);
+        secretSharing = new SecretSharingImpl(1024);
         // Split the secret into shares
         shares = secretSharing.splitSecret(k, n, secret);
         // number of generated shares is correct
@@ -269,8 +285,8 @@ public class SecretSharingTest {
     }
 
     private static int[] getRandomIndexes(int k, int n) {
-
-        return new Random().ints(0, n).distinct().limit(k).toArray();
+        // Share indices are 1..n (P(0) is not distributed).
+        return new Random().ints(1, n + 1).distinct().limit(k).toArray();
     }
 
     private static List<SecretShareDTO> getSubsetShares(List<SecretShareDTO> shares, int[] indexes) {
