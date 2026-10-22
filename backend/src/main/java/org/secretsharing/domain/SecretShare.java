@@ -1,6 +1,5 @@
 package org.secretsharing.domain;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -13,11 +12,12 @@ public class SecretShare {
 	@Id
 	private final Integer index;
 
-	private final BigInteger share;
+	/** Decimal string form of the share (BigInteger does not fit Decimal128 for large bit sizes). */
+	private final String share;
 
 	private final byte[] signature;
 
-	public SecretShare(Integer index, BigInteger share, byte[] signature) {
+	public SecretShare(Integer index, String share, byte[] signature) {
 		this.index = index;
 		this.share = share;
 		this.signature = signature;
@@ -27,7 +27,7 @@ public class SecretShare {
 		return index;
 	}
 
-	public BigInteger getShare() {
+	public String getShare() {
 		return share;
 	}
 

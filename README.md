@@ -30,7 +30,7 @@ docker compose up -d   # Mongo
 |--------|------|---------|
 | `GET` | `/api/v1/splitSecret?k=&n=&secret=` | Split a secret into `n` signed shares |
 | `POST` | `/api/v1/recoverSecret` | Reconstruct the secret from signed shares |
-| `GET` | `/api/v1/secretShares` | Last in-memory share set from this process |
+| `GET` | `/api/v1/secretShares` | Last persisted share set in MongoDB |
 | `GET` | `/actuator/health` | Health probe |
 
 Sanitized errors: `400` / `403` / `429` / `500` (same policy as `reactive`).
@@ -42,7 +42,7 @@ Sanitized errors: `400` / `403` / `429` / `500` (same policy as `reactive`).
 | `secret-sharing.maxShares` | `60` | Upper bound for `n` |
 | `secret-sharing.cors.allowed-origins` | localhost:4200–4202 | CORS allow-list |
 | `secret-sharing.rate-limit.recover.*` | 30 / 60s | Recover rate limit |
-| `secret-sharing.mongo-credentials.*` | env `MONGO_*` | Used by `MongoConfig` |
+| `spring.data.mongodb.uri` | local user/password URI | Override with `SPRING_DATA_MONGODB_URI` (Compose sets this) |
 | `spring.codec.max-in-memory-size` | `256KB` | Request body cap |
 
 ## License

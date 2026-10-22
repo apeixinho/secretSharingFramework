@@ -5,7 +5,7 @@ spring:
     max-in-memory-size: 256KB
   data:
     mongodb:
-      # Prefer URI when available; MongoConfig still supplies credentials for local compose.
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://user:user_password@localhost:27017/secretsharing?authSource=secretsharing}
       auto-index-creation: false
 
 logging:
@@ -21,9 +21,6 @@ management:
   endpoint:
     health:
       show-details: never
-  health:
-    mongo:
-      enabled: false
 
 secret-sharing:
   asymmetricAlgorithm: RSA
@@ -37,7 +34,3 @@ secret-sharing:
     recover:
       capacity: 30
       window-seconds: 60
-  mongo-credentials:
-    mongouser: ${MONGO_USER:root}
-    mongopass: ${MONGO_PASSWORD:example}
-    mongodb: ${MONGO_USER_DB:secretsharing}

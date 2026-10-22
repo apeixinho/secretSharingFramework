@@ -10,7 +10,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.secretsharing.config.CryptographyConfiguration;
+import org.secretsharing.domain.SecretShare;
+import org.secretsharing.mapper.SecretShareMapper;
 import org.secretsharing.model.SecretShareDTO;
+import org.secretsharing.repository.SecretShareRepository;
 import org.secretsharing.service.SecretSharing;
 import org.secretsharing.service.SecretSharingImpl;
 import reactor.core.publisher.Flux;
@@ -32,7 +35,9 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class SecretSharingImplTest {
@@ -86,11 +91,46 @@ public class SecretSharingImplTest {
             });
             when(configuration.maxShares()).thenReturn(maxShares);
 
-            secretSharing = new SecretSharingImpl(maxShares, prime, random, bitSize, maxByteSize, keyPair, signature);
+            secretSharing = createSecretSharing();
             shares = Flux.empty();
         } catch (Exception e) {
             Logger.getLogger(SecretSharingImplTest.class.getName()).log(Level.SEVERE,e.getMessage());
         }
+    }
+
+    private SecretSharingImpl createSecretSharing() {
+        return new SecretSharingImpl(
+                maxShares,
+                prime,
+                random,
+                bitSize,
+                maxByteSize,
+                keyPair,
+                signature,
+                stubRepository(),
+                stubMapper());
+    }
+
+    private static SecretShareRepository stubRepository() {
+        SecretShareRepository repository = mock(SecretShareRepository.class);
+        when(repository.deleteAll()).thenReturn(Mono.empty());
+        when(repository.saveAll(any(Iterable.class)))
+                .thenAnswer(invocation -> Flux.fromIterable(invocation.getArgument(0)));
+        when(repository.findAll()).thenReturn(Flux.empty());
+        return repository;
+    }
+
+    private static SecretShareMapper stubMapper() {
+        SecretShareMapper mapper = mock(SecretShareMapper.class);
+        when(mapper.secretShareDtoToSecretShare(any(SecretShareDTO.class))).thenAnswer(invocation -> {
+            SecretShareDTO dto = invocation.getArgument(0);
+            return new SecretShare(dto.getIndex(), dto.getShare().toString(), dto.getSignature());
+        });
+        when(mapper.secretShareToSecretShareDTO(any(SecretShare.class))).thenAnswer(invocation -> {
+            SecretShare entity = invocation.getArgument(0);
+            return new SecretShareDTO(entity.getIndex(), new BigInteger(entity.getShare()), entity.getSignature());
+        });
+        return mapper;
     }
 
     @Test
@@ -199,7 +239,7 @@ public class SecretSharingImplTest {
         bitSize = 256;
         maxByteSize = ((bitSize - 1) / 8);
         prime = BigInteger.probablePrime(bitSize, random);
-        secretSharing = new SecretSharingImpl(maxShares, prime, random, bitSize, maxByteSize, keyPair, signature);
+        secretSharing = createSecretSharing();
 
         String secret = "Little Secret...\n\n42";
         // Split the secret into shares
@@ -245,7 +285,7 @@ public class SecretSharingImplTest {
         bitSize = 1024;
         maxByteSize = ((bitSize - 1) / 8);
         prime = BigInteger.probablePrime(bitSize, random);
-        secretSharing = new SecretSharingImpl(maxShares, prime, random, bitSize, maxByteSize, keyPair, signature);
+        secretSharing = createSecretSharing();
 
         int k = 3, n = 6;
         String secret = """
@@ -286,7 +326,7 @@ public class SecretSharingImplTest {
         bitSize = 768;
         maxByteSize = ((bitSize - 1) / 8);
         prime = BigInteger.probablePrime(bitSize, random);
-        secretSharing = new SecretSharingImpl(maxShares, prime, random, bitSize, maxByteSize, keyPair, signature);
+        secretSharing = createSecretSharing();
 
         int k = 3, n = 6;
 
@@ -329,7 +369,7 @@ public class SecretSharingImplTest {
         bitSize = 4096;
         maxByteSize = ((bitSize - 1) / 8);
         prime = BigInteger.probablePrime(bitSize, random);
-        secretSharing = new SecretSharingImpl(maxShares, prime, random, bitSize, maxByteSize, keyPair, signature);
+        secretSharing = createSecretSharing();
 
         int k = 2, n = 4;
 
