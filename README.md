@@ -46,7 +46,7 @@ Sanitized errors: `400` / `403` / `429` / `500` (same policy as `reactive`).
 | `secret-sharing.keyPairBitSize` | `2048` | RSA signing key size |
 | `secret-sharing.cors.allowed-origins` | localhost:4200–4202 | CORS allow-list |
 | `secret-sharing.rate-limit.recover.*` | 30 / 60s | Recover rate limit |
-| `spring.data.mongodb.uri` | local user/password URI | Override with `SPRING_DATA_MONGODB_URI` (Compose sets this) |
+| `spring.mongodb.uri` | local user/password URI | Boot 4 property; override with `SPRING_MONGODB_URI` (Compose sets host `mongo`) |
 | `spring.codec.max-in-memory-size` | `256KB` | Request body cap |
 
 Learning/reference service — not a production crypto package.

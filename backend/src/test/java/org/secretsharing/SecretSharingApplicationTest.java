@@ -8,10 +8,10 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {
-		"spring.data.mongodb.uri=mongodb://localhost:27017/secretsharing",
+		"spring.mongodb.uri=mongodb://localhost:27017/secretsharing",
 		"management.health.defaults.enabled=false",
 		"management.health.ping.enabled=true",
-		"management.health.mongo.enabled=false"
+		"management.health.mongodb.enabled=false"
 })
 public class SecretSharingApplicationTest {
 
